@@ -1,17 +1,54 @@
 ==========================
-MyList Class Test
+1-my_list.py
 ==========================
 
->>> MyList = __import__('1-my_list').MyList
->>> my_list = MyList()
->>> my_list.append(1)
->>> my_list.append(4)
->>> my_list.append(2)
->>> my_list.append(3)
->>> my_list.append(5)
->>> print(my_list)
-[1, 4, 2, 3, 5]
->>> my_list.print_sorted()
-[1, 2, 3, 4, 5]
->>> print(my_list)
-[1, 4, 2, 3, 5]
+Importing the module:
+
+    >>> MyList = __import__('1-my_list').MyList
+
+Creating an empty list:
+
+    >>> my_list = MyList()
+    >>> print(my_list)
+    []
+
+Checking inheritance:
+
+    >>> isinstance(my_list, list)
+    True
+
+Appending elements:
+
+    >>> my_list.append(1)
+    >>> my_list.append(4)
+    >>> my_list.append(2)
+    >>> my_list.append(3)
+    >>> my_list.append(5)
+    >>> print(my_list)
+    [1, 4, 2, 3, 5]
+
+Printing the sorted list:
+
+    >>> my_list.print_sorted()
+    [1, 2, 3, 4, 5]
+
+Original list remains unchanged:
+
+    >>> print(my_list)
+    [1, 4, 2, 3, 5]
+
+Empty list:
+
+    >>> empty = MyList()
+    >>> empty.print_sorted()
+    []
+
+Negative numbers:
+
+    >>> nums = MyList()
+    >>> nums.append(-5)
+    >>> nums.append(7)
+    >>> nums.append(0)
+    >>> nums.append(-2)
+    >>> nums.print_sorted()
+    [-5, -2, 0, 7]
