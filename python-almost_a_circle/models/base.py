@@ -1,4 +1,3 @@
-```python
 #!/usr/bin/python3
 """Defines the Base class."""
 import json
@@ -103,33 +102,33 @@ class Base:
                 reader = csv.reader(file)
 
                 if cls.__name__ == "Rectangle":
-                    return [
-                        cls.create(
-                            id=int(row[0]),
-                            width=int(row[1]),
-                            height=int(row[2]),
-                            x=int(row[3]),
-                            y=int(row[4])
-                        )
-                        for row in reader
-                        if row
-                    ]
+                    for row in reader:
+                        if row:
+                            dictionary = {
+                                "id": int(row[0]),
+                                "width": int(row[1]),
+                                "height": int(row[2]),
+                                "x": int(row[3]),
+                                "y": int(row[4])
+                            }
+                            yield_instance = cls.create(**dictionary)
+                            if yield_instance is not None:
+                                yield_instance
 
-                if cls.__name__ == "Square":
-                    return [
-                        cls.create(
-                            id=int(row[0]),
-                            size=int(row[1]),
-                            x=int(row[2]),
-                            y=int(row[3])
-                        )
-                        for row in reader
-                        if row
-                    ]
+                elif cls.__name__ == "Square":
+                    for row in reader:
+                        if row:
+                            dictionary = {
+                                "id": int(row[0]),
+                                "size": int(row[1]),
+                                "x": int(row[2]),
+                                "y": int(row[3])
+                            }
+                            yield_instance = cls.create(**dictionary)
+                            if yield_instance is not None:
+                                yield_instance
 
         except FileNotFoundError:
             return []
 
         return []
-```
-
