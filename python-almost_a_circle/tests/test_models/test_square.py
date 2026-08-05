@@ -92,3 +92,50 @@ class TestSquare(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    def test_negative_y(self):
+        """Test negative y."""
+        with self.assertRaises(ValueError):
+            Square(1, 2, -3)
+
+    def test_save_to_file_none(self):
+        """Test save_to_file with None."""
+        Square.save_to_file(None)
+        with open("Square.json", "r", encoding="utf-8") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_to_file_empty(self):
+        """Test save_to_file with an empty list."""
+        Square.save_to_file([])
+        with open("Square.json", "r", encoding="utf-8") as file:
+            self.assertEqual(file.read(), "[]")
+
+    def test_save_to_file_objects(self):
+        """Test save_to_file with Square objects."""
+        square = Square(1)
+        Square.save_to_file([square])
+
+        with open("Square.json", "r", encoding="utf-8") as file:
+            data = file.read()
+
+        self.assertIn('"size": 1', data)
+
+    def test_load_from_file_missing(self):
+        """Test load_from_file when the file does not exist."""
+        import os
+
+        if os.path.exists("Square.json"):
+            os.remove("Square.json")
+
+        squares = Square.load_from_file()
+        self.assertEqual(squares, [])
+
+    def test_load_from_file_exists(self):
+        """Test load_from_file when the file exists."""
+        square = Square(1)
+        Square.save_to_file([square])
+
+        squares = Square.load_from_file()
+
+        self.assertEqual(len(squares), 1)
+        self.assertIsInstance(squares[0], Square)
+        self.assertEqual(squares[0].size, 1)
