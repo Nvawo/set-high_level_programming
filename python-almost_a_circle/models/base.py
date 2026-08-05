@@ -65,8 +65,13 @@ class Base:
 
         try:
             with open(filename, "r", encoding="utf-8") as file:
-                list_dicts = cls.from_json_string(file.read())
+                json_string = file.read()
         except FileNotFoundError:
             return []
 
-        return [cls.create(**data) for data in list_dicts]
+        list_dictionaries = cls.from_json_string(json_string)
+
+        return [
+            cls.create(**dictionary)
+            for dictionary in list_dictionaries
+        ]
