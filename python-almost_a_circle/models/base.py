@@ -4,7 +4,7 @@ import json
 
 
 class Base:
-    """Base class for the project."""
+    """Base class for all models."""
 
     __nb_objects = 0
 
@@ -18,15 +18,16 @@ class Base:
 
     @staticmethod
     def to_json_string(list_dictionaries):
-        """Return the JSON string representation of a list of dictionaries."""
+        """Return JSON string representation of a list of dictionaries."""
         if list_dictionaries is None or list_dictionaries == []:
             return "[]"
         return json.dumps(list_dictionaries)
 
     @classmethod
     def save_to_file(cls, list_objs):
-        """Write the JSON representation of objects to a file."""
+        """Write JSON representation of objects to a file."""
         filename = cls.__name__ + ".json"
+
         if list_objs is None:
             list_objs = []
 
@@ -37,19 +38,19 @@ class Base:
 
     @staticmethod
     def from_json_string(json_string):
-        """Return the list represented by a JSON string."""
+        """Return list represented by a JSON string."""
         if json_string is None or json_string == "":
             return []
         return json.loads(json_string)
 
     @classmethod
     def create(cls, **dictionary):
-        """Return an instance with attributes set from a dictionary."""
+        """Create an instance from a dictionary."""
         raise NotImplementedError
 
     @classmethod
     def load_from_file(cls):
-        """Return a list of instances from a JSON file."""
+        """Load instances from a JSON file."""
         filename = cls.__name__ + ".json"
 
         try:
