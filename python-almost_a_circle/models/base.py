@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 """Defines the Base class."""
+
 import json
 import csv
 
 
 class Base:
-    """Base class for the project."""
+    """Base class for all other classes in the project."""
 
     __nb_objects = 0
 
@@ -20,7 +21,7 @@ class Base:
     @staticmethod
     def to_json_string(list_dictionaries):
         """Return the JSON string representation of a list of dictionaries."""
-        if list_dictionaries is None or list_dictionaries == []:
+        if list_dictionaries is None or len(list_dictionaries) == 0:
             return "[]"
         return json.dumps(list_dictionaries)
 
@@ -32,10 +33,14 @@ class Base:
         if list_objs is None:
             list_objs = []
 
-        list_dicts = [obj.to_dictionary() for obj in list_objs]
+        list_dictionaries = []
+        for obj in list_objs:
+            list_dictionaries.append(obj.to_dictionary())
+
+        json_string = cls.to_json_string(list_dictionaries)
 
         with open(filename, "w", encoding="utf-8") as file:
-            file.write(cls.to_json_string(list_dicts))
+            file.write(json_string)
 
     @staticmethod
     def from_json_string(json_string):
@@ -46,8 +51,14 @@ class Base:
 
     @classmethod
     def create(cls, **dictionary):
-        """Return an instance with attributes set from a dictionary."""
-        raise NotImplementedError
+        """Return an instance with all attributes already set."""
+        if cls.__name__ == "Rectangle":
+            dummy = cls(1, 1)
+        else:
+            dummy = cls(1)
+
+        dummy.update(**dictionary)
+        return dummy
 
     @classmethod
     def load_from_file(cls):
@@ -56,11 +67,14 @@ class Base:
 
         try:
             with open(filename, "r", encoding="utf-8") as file:
-                list_dicts = cls.from_json_string(file.read())
+                json_string = file.read()
         except FileNotFoundError:
             return []
 
-        return [cls.create(**data) for data in list_dicts]
+        list_dictionaries = cls.from_json_string(json_string)
+
+        return [cls.create(**dictionary)
+                for dictionary in list_dictionaries]
 
     @classmethod
     def save_to_file_csv(cls, list_objs):
@@ -73,8 +87,8 @@ class Base:
             if list_objs is None:
                 return
 
-            if cls.__name__ == "Rectangle":
-                for obj in list_objs:
+            for obj in list_objs:
+                if cls.__name__ == "Rectangle":
                     writer.writerow([
                         obj.id,
                         obj.width,
@@ -82,9 +96,7 @@ class Base:
                         obj.x,
                         obj.y
                     ])
-
-            elif cls.__name__ == "Square":
-                for obj in list_objs:
+                elif cls.__name__ == "Square":
                     writer.writerow([
                         obj.id,
                         obj.size,
@@ -96,39 +108,90 @@ class Base:
     def load_from_file_csv(cls):
         """Deserialize objects from CSV."""
         filename = cls.__name__ + ".csv"
+        instances = []
 
         try:
             with open(filename, "r", newline="", encoding="utf-8") as file:
                 reader = csv.reader(file)
 
-                if cls.__name__ == "Rectangle":
-                    for row in reader:
-                        if row:
-                            dictionary = {
-                                "id": int(row[0]),
-                                "width": int(row[1]),
-                                "height": int(row[2]),
-                                "x": int(row[3]),
-                                "y": int(row[4])
-                            }
-                            yield_instance = cls.create(**dictionary)
-                            if yield_instance is not None:
-                                yield_instance
+                for row in reader:
+                    if cls.__name__ == "Rectangle":
+                        dictionary = {
+                            "id": int(row[0]),
+                            "width": int(row[1]),
+                            "height": int(row[2]),
+                            "x": int(row[3]),
+                            "y": int(row[4])
+                        }
+                    elif cls.__name__ == "Square":
+                        dictionary = {
+                            "id": int(row[0]),
+                            "size": int(row[1]),
+                            "x": int(row[2]),
+                            "y": int(row[3])
+                        }
+                    else:
+                        continue
 
-                elif cls.__name__ == "Square":
-                    for row in reader:
-                        if row:
-                            dictionary = {
-                                "id": int(row[0]),
-                                "size": int(row[1]),
-                                "x": int(row[2]),
-                                "y": int(row[3])
-                            }
-                            yield_instance = cls.create(**dictionary)
-                            if yield_instance is not None:
-                                yield_instance
+                    instances.append(cls.create(**dictionary))
 
         except FileNotFoundError:
             return []
 
-        return []
+        return instances
+
+    @staticmethod
+    def draw(list_rectangles, list_squares):
+        """Open a window and draw all Rectangles and Squares."""
+        import turtle
+
+        screen = turtle.Screen()
+        screen.title("Almost a Circle")
+        screen.bgcolor("white")
+
+        pen = turtle.Turtle()
+        pen.speed(0)
+        pen.pensize(2)
+
+        def draw_shape(x, y, width, height, color):
+            """Draw one rectangle or square."""
+            pen.penup()
+            pen.goto(x, y)
+            pen.setheading(0)
+            pen.pendown()
+
+            pen.pencolor(color)
+            pen.fillcolor(color)
+            pen.begin_fill()
+
+            pen.forward(width)
+            pen.right(90)
+            pen.forward(height)
+            pen.right(90)
+            pen.forward(width)
+            pen.right(90)
+            pen.forward(height)
+            pen.right(90)
+
+            pen.end_fill()
+
+        for rectangle in list_rectangles:
+            draw_shape(
+                rectangle.x,
+                -rectangle.y,
+                rectangle.width,
+                rectangle.height,
+                "blue"
+            )
+
+        for square in list_squares:
+            draw_shape(
+                square.x,
+                -square.y,
+                square.size,
+                square.size,
+                "red"
+            )
+
+        pen.hideturtle()
+        screen.mainloop()
