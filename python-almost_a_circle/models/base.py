@@ -38,10 +38,14 @@ class Base:
         if list_objs is None:
             list_objs = []
 
-        list_dicts = [obj.to_dictionary() for obj in list_objs]
+        list_dictionaries = [
+            obj.to_dictionary() for obj in list_objs
+        ]
+
+        json_string = cls.to_json_string(list_dictionaries)
 
         with open(filename, "w", encoding="utf-8") as file:
-            file.write(cls.to_json_string(list_dicts))
+            file.write(json_string)
 
     @classmethod
     def create(cls, **dictionary):
