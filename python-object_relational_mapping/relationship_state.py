@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Defines the State class."""
+"""Defines a class to create a State."""
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
