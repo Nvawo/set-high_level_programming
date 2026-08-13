@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Create California and San Francisco."""
+"""Create California with San Francisco."""
 
 import sys
 from sqlalchemy import create_engine
@@ -15,9 +15,7 @@ if __name__ == "__main__":
 
     engine = create_engine(
         "mysql+mysqldb://{}:{}@localhost:3306/{}".format(
-            username,
-            password,
-            database
+            username, password, database
         )
     )
 
@@ -25,9 +23,7 @@ if __name__ == "__main__":
     session = Session()
 
     california = State(name="California")
-    san_francisco = City(name="San Francisco")
-
-    california.cities.append(san_francisco)
+    california.cities.append(City(name="San Francisco"))
 
     session.add(california)
     session.commit()
