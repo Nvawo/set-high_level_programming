@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Create California with San Francisco."""
+"""Creates a State and a City."""
 
 import sys
 from sqlalchemy import create_engine
@@ -22,10 +22,11 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    california = State(name="California")
-    california.cities.append(City(name="San Francisco"))
+    state = State(name="California")
+    city = City(name="San Francisco")
+    state.cities.append(city)
 
-    session.add(california)
+    session.add(state)
     session.commit()
 
     session.close()
