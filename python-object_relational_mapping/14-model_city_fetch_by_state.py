@@ -14,7 +14,7 @@ if __name__ == "__main__":
     database = sys.argv[3]
 
     engine = create_engine(
-        'mysql+mysqldb://{}:{}@localhost:3306/{}'.format(
+        "mysql+mysqldb://{}:{}@localhost:3306/{}".format(
             username, password, database
         )
     )
@@ -22,13 +22,13 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    cities = session.query(City).join(
-        State, City.state_id == State.id
+    results = session.query(State, City).join(
+        City, State.id == City.state_id
     ).order_by(City.id).all()
 
-    for city in cities:
+    for state, city in results:
         print("{}: ({}) {}".format(
-            city.state.name,
+            state.name,
             city.id,
             city.name
         ))
