@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-"""Lists all states and their cities."""
+"""Lists all State objects and their corresponding City objects."""
 
 import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from relationship_state import State
 from relationship_city import City
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
 
     for state in states:
         print("{}: {}".format(state.id, state.name))
-        for city in sorted(state.cities, key=lambda c: c.id):
+        for city in sorted(state.cities, key=lambda city: city.id):
             print("\t{}: {}".format(city.id, city.name))
 
     session.close()
