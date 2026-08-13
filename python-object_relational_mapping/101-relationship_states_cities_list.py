@@ -1,10 +1,9 @@
 #!/usr/bin/python3
-"""Lists all State objects and their corresponding City objects."""
+"""Lists all State objects and corresponding City objects."""
 
 import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from relationship_state import State
 from relationship_city import City
 

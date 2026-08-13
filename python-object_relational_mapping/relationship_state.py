@@ -1,13 +1,15 @@
 #!/usr/bin/python3
-"""Defines the State class."""
+"""Defines the State model."""
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
-from model_state import Base
+from sqlalchemy.orm import declarative_base, relationship
+
+
+Base = declarative_base()
 
 
 class State(Base):
-    """Represents a state."""
+    """Represent a state."""
 
     __tablename__ = "states"
 
@@ -15,8 +17,4 @@ class State(Base):
                 autoincrement=True)
     name = Column(String(128), nullable=False)
 
-    cities = relationship(
-        "City",
-        cascade="all, delete, delete-orphan",
-        backref="state"
-    )
+    cities = relationship("City", back_populates="state")
